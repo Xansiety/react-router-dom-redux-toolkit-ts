@@ -1,17 +1,20 @@
 import { useDispatch, useSelector } from "react-redux";
 import { getMorty } from "../../services";
 import { createUser } from "../../redux/states/user";
+import { useNavigate } from "react-router";
+import { PrivateRoutes } from "../../models/routes";
 
 export const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const login = async () => {
     try {
-      const result = await getMorty();
-      // console.log({result});
+      const result = await getMorty(); 
       dispatch(createUser(result));
-    } catch (error) {
-      console.log(error);
-    }
+      navigate(`/${PrivateRoutes.PRIVATE}`, {
+        replace: true,
+      });
+    } catch (error) {}
   };
 
   return (
@@ -21,5 +24,5 @@ export const Login = () => {
     </div>
   );
 };
- 
+
 export default Login;
