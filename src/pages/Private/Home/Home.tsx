@@ -3,3 +3,6 @@ export const Home = () => {
     <div>Home</div>
   )
 }
+
+// default export for lazy loading
+export default Home;

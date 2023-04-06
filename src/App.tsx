@@ -1,23 +1,32 @@
- 
-import "./App.css";
+import { Suspense, lazy } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { RoutesWithNotFound } from "./helpers/routes-with-not-found";
+import { Provider } from "react-redux"; 
+import { store } from "./redux/store"; 
+import { AuthGuard } from "./guards"; 
 import { PrivateRoutes, PublicRoutes } from "./models";
-import { AuthGuard } from "./guards";
-import { Login, Private } from "./pages";
-import { RoutesWithNotFound } from './helpers/routes-with-not-found';
+import "./App.css"; 
 
+const Login = lazy(() => import("./pages/Login/Login"));
+const Private = lazy(() => import("./pages/Private/Private"));
+ 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <RoutesWithNotFound>
-          <Route path="/" element={<Navigate to={PrivateRoutes.PRIVATE} />} />
-          <Route path={PublicRoutes.LOGIN} element={<Login />} />
-          <Route element={<AuthGuard />}>
-            <Route path={`${PrivateRoutes.PRIVATE}/*`} element={<Private />} />
-          </Route>
-        </RoutesWithNotFound>
-      </BrowserRouter>
+      <Suspense fallback={<h1>Cargando...</h1>}>
+        <Provider store={store}>
+          <BrowserRouter>
+          <RoutesWithNotFound>
+            <Route path="/" element={<Navigate to={PrivateRoutes.PRIVATE} />} />
+            <Route path={PublicRoutes.LOGIN} element={<Login />} />
+            {/* Encapsulamos por módulos nuestras rutas y validamos mediante un GUARD */}
+            <Route element={<AuthGuard />}>
+              <Route path={`${PrivateRoutes.PRIVATE}/*`} element={<Private />} />
+            </Route>
+          </RoutesWithNotFound>
+        </BrowserRouter>
+        </Provider>        
+      </Suspense>
     </div>
   );
 }

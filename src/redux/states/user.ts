@@ -7,13 +7,32 @@ export const EmptyUserState: UserInfo = {
   email: "",
 };
 
+export const persistLocalStorageUser = (userInfo: UserInfo) => {
+  // define elements to persist in local storage, NO SENSITIVE DATA
+  localStorage.setItem("user", JSON.stringify({...userInfo}));
+};
+
+export const clearLocalStorageUser = () => {
+  localStorage.removeItem("user");
+}
+ 
 export const userSlice = createSlice({
   name: "user",
-  initialState: EmptyUserState,
+  initialState: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string) : EmptyUserState,
   reducers: {
-    createUser: (state, action) => action.payload,
-    updateUser: (state, action) => ({ ...state, ...action.payload }),
-    resetUser: () => EmptyUserState,
+    createUser: (state, action) => {
+      persistLocalStorageUser(action.payload);
+      return  action.payload;
+    },
+    updateUser: (state, action) =>  {
+      const result = {...state, ...action.payload};
+      persistLocalStorageUser(result);
+      return result;
+    },
+    resetUser: () => {
+      clearLocalStorageUser();
+      return EmptyUserState;
+    },
   },
 });
 

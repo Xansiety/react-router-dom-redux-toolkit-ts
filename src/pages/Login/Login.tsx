@@ -7,8 +7,11 @@ export const Login = () => {
   const login = async () => {
     try {
       const result = await getMorty();
+      // console.log({result});
       dispatch(createUser(result));
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -18,3 +21,5 @@ export const Login = () => {
     </div>
   );
 };
+ 
+export default Login;

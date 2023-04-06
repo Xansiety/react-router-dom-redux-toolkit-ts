@@ -3,3 +3,6 @@ export const Dashboard = () => {
     <div>Dashboard</div>
   )
 }
+
+// default export for lazy loading
+export default Dashboard;
